@@ -39,12 +39,13 @@ chmod +x $DIRNAME/create_backup.sh
 if [[ -f /etc/cron.d/create_backup ]]; then
     echo "INFO: backup script already configured"
 else
-    echo "@daily root $DIRNAME/create_backup.sh" > /etc/cron.d/create_backup
+    echo "@daily root $(pwd)/create_backup.sh" > /etc/cron.d/create_backup
+    echo "INFO: backup script to run daily $(pwd)/create_backup.sh" 
 fi
 
 # ======== SSL ============
 
-pushd ~
+pushd ~ &> /dev/null
 if [[ -f certbot-auto ]]; then
     echo "INFO: certbot-auto aready installed"
 else
@@ -61,7 +62,7 @@ else
     service nginx restart
 fi
 
-popd
+popd &> /dev/null
 
 # ======== Password for wp-admin ======
 # TODO
