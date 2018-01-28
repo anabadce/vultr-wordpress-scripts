@@ -35,7 +35,7 @@ fi
 
 # ======== Backups ========
 
-chmod +x $DIRNAME/create_backup.sh
+chmod +x ./create_backup.sh
 if [[ -f /etc/cron.d/create_backup ]]; then
     echo "INFO: backup script already configured"
 else
@@ -63,6 +63,14 @@ else
 fi
 
 popd &> /dev/null
+
+# ========= PostFix =========
+
+echo "INFO: Disabling IPv6 in Postfix"
+sed -i.bak -E "s/inet_protocols\ .*/inet_protocols = ipv4/" /etc/postfix/main.cf
+echo "INFO: Setting up Postfix domain"
+sed -i.bak "s/#myorigin = \$mydomain/myorigin = $DOMAIN_NAME/" /etc/postfix/main.cf
+service postfix restart
 
 # ======== Password for wp-admin ======
 # TODO
