@@ -7,8 +7,13 @@ MYSQLDUMP='/usr/bin/mysqldump'
 MYSQL='/usr/bin/mysql'
 
 # Preparing folder
-
-mkdir -p $BACKUP_PATH
+if [[ -f $BACKUP_PATH ]]; then
+  echo "INFO: Creating folder $BACKUP_PATH"
+  mkdir -p $BACKUP_PATH
+else
+  echo "INFO: Folder $BACKUP_PATH already exists"
+fi
+exit 0
 
 # Compressing files
 
