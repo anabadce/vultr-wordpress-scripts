@@ -13,7 +13,6 @@ if [[ -f $BACKUP_PATH ]]; then
 else
   echo "INFO: Folder $BACKUP_PATH already exists"
 fi
-exit 0
 
 # Compressing files
 
