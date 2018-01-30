@@ -30,5 +30,5 @@ done
 
 # Clean old files
 
-find $BACKUP_PATH -mtime +7 -type f -delete
+find $BACKUP_PATH -maxdepth 1 -mtime +7 -type f -delete
 
