@@ -17,6 +17,20 @@ fi
 DIRNAME=$(dirname "$0")
 pushd $DIRNAME
 
+# ======== CRON Function ========
+
+function setup_cron () {
+    SCRIPT_NAME=$1
+    CRON_REPEAT=$2
+    chmod +x ./${SCRIPT_NAME}.sh
+    if [[ -f /etc/cron.d/$SCRIPT_NAME ]]; then
+        echo "INFO: $SCRIPT_NAME script already configured in cron.d"
+    else
+        echo "$CRON_REPEAT root $(pwd)/${SCRIPT_NAME}.sh" > /etc/cron.d/$SCRIPT_NAME
+        echo "INFO: cron.d script to run $CRON_REPEAT $(pwd)/${SCRIPT_NAME}.sh"
+    fi
+}
+
 # ======== SWAP ========
 
 if [[ -f /etc/cron.d/swap ]]; then
@@ -35,13 +49,21 @@ fi
 
 # ======== Backups ========
 
-chmod +x ./create_backup.sh
-if [[ -f /etc/cron.d/create_backup ]]; then
-    echo "INFO: backup script already configured"
-else
-    echo "@daily root $(pwd)/create_backup.sh" > /etc/cron.d/create_backup
-    echo "INFO: backup script to run daily $(pwd)/create_backup.sh" 
-fi
+SCRIPT_NAME="create_backup"
+CRON_REPEAT="@daily"
+setup_cron $SCRIPT_NAME $CRON_REPEAT
+
+# ======== wordpress update ========
+
+SCRIPT_NAME="wordpress-cli-update"
+CRON_REPEAT="@weekly"
+setup_cron $SCRIPT_NAME $CRON_REPEAT
+
+# ======== wordpress update ========
+
+SCRIPT_NAME="server-update"
+CRON_REPEAT="@weekly"
+setup_cron $SCRIPT_NAME $CRON_REPEAT
 
 # ======== SSL ============
 
@@ -66,10 +88,12 @@ popd &> /dev/null
 
 # ========= PostFix =========
 
+DOMAIN_EMAIL=$(echo $DOMAIN_NAME | sed -E 's/www\.(.*)/\1/')
+
 echo "INFO: Disabling IPv6 in Postfix"
 sed -i.bak -E "s/inet_protocols\ .*/inet_protocols = ipv4/" /etc/postfix/main.cf
 echo "INFO: Setting up Postfix domain"
-sed -i.bak "s/#myorigin = \$mydomain/myorigin = $DOMAIN_NAME/" /etc/postfix/main.cf
+sed -i.bak "s/#myorigin = \$mydomain/myorigin = $DOMAIN_EMAIL/" /etc/postfix/main.cf
 service postfix restart
 
 # ======== Password for wp-admin ======
