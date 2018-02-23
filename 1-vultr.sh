@@ -24,7 +24,7 @@ function setup_cron () {
     CRON_REPEAT=$2
     chmod +x ./${SCRIPT_NAME}.sh
     if [[ -f /etc/cron.d/$SCRIPT_NAME ]]; then
-        echo "INFO: $SCRIPT_NAME script already configured in cron.d"
+        echo "INFO: cron.d $SCRIPT_NAME script already configured."
     else
         echo "$CRON_REPEAT root $(pwd)/${SCRIPT_NAME}.sh" > /etc/cron.d/$SCRIPT_NAME
         echo "INFO: cron.d script to run $CRON_REPEAT $(pwd)/${SCRIPT_NAME}.sh"
@@ -62,6 +62,12 @@ setup_cron $SCRIPT_NAME $CRON_REPEAT
 # ======== wordpress update ========
 
 SCRIPT_NAME="server-update"
+CRON_REPEAT="@weekly"
+setup_cron $SCRIPT_NAME $CRON_REPEAT
+
+# ======== certbot update ========
+
+SCRIPT_NAME="certbot-update"
 CRON_REPEAT="@weekly"
 setup_cron $SCRIPT_NAME $CRON_REPEAT
 

@@ -12,7 +12,9 @@ fi
 if [[ -z $1 ]]; then
     echo "Usage: $(basename "$0") SITE_PATH"
     echo "Example: $(basename "$0") /var/www/html"
-    exit 1
+    echo
+    echo "Running using default Wordpress location in /var/www/html..."
+    SITE_PATH=/var/www/html
 else
     SITE_PATH=$1
 fi
