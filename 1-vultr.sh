@@ -8,7 +8,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 if [[ -z $1 ]]; then
-    echo "Usage: $(basename "$0") DOMAIN_NAME"
+    echo "Usage: $(basename "$0") DOMAIN_NAME_NO_WWW"
     exit 1
 else
     DOMAIN_NAME=$1
@@ -101,6 +101,10 @@ sed -i.bak -E "s/inet_protocols\ .*/inet_protocols = ipv4/" /etc/postfix/main.cf
 echo "INFO: Setting up Postfix domain"
 sed -i.bak "s/#myorigin = \$mydomain/myorigin = $DOMAIN_EMAIL/" /etc/postfix/main.cf
 service postfix restart
+
+# ========= Log Folder =====
+mkdir -p /opt/logs
+chmod 777 /opt/logs
 
 # ======== Password for wp-admin ======
 # TODO

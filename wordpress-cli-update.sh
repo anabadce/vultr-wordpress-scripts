@@ -2,7 +2,7 @@
 
 WEB_USER=nginx
 WP_CLI_URL=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-LOG_FILE=/tmp/wordpress-cli-update.sh.txt
+LOG_FILE=/opt/logs/wordpress-cli-update.sh.txt
 
 if [[ $EUID -ne 0 ]]; then
     echo "ERROR: This script must be run as root" 
