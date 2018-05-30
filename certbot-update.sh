@@ -11,6 +11,6 @@ echo $(date) > $LOG_FILE
 
 /root/certbot-auto renew -n &>> $LOG_FILE
 
-service nginx reload &>> $LOG_FILE
+/sbin/service nginx reload &>> $LOG_FILE
 
 echo "INFO: Done, see logs in $LOG_FILE"
