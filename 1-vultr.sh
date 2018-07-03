@@ -1,6 +1,8 @@
 #!/bin/bash -e
 
-NGINX_CONF=/etc/nginx/conf.d/wordpress_https.conf
+PHP_INI=/etc/php.ini
+NGINX_CONF_HTTP=/etc/nginx/conf.d/wordpress_http.conf
+NGINX_CONF_HTTPS=/etc/nginx/conf.d/wordpress_https.conf
 
 if [[ $EUID -ne 0 ]]; then
     echo "ERROR: This script must be run as root" 
@@ -71,6 +73,16 @@ SCRIPT_NAME="certbot-update"
 CRON_REPEAT="@weekly"
 setup_cron $SCRIPT_NAME $CRON_REPEAT
 
+# ========= PHP =============
+sed -i.bak "s/expose_php = On/expose_php = Off/" $PHP_INI
+service php-fpm restart
+
+# ========= Nginx ===========
+
+/bin/cp -f ./nginx/wordpress_http.conf $NGINX_CONF_HTTP
+/bin/cp -f ./nginx/wordpress_httsp.conf $NGINX_CONF_HTTPS
+sed -i.bak "s/DOMAIN_NAME/$DOMAIN_NAME/" $NGINX_CONF_HTTP
+
 # ======== SSL ============
 
 pushd ~ &> /dev/null
@@ -84,8 +96,8 @@ else
     LE_CERT=/etc/letsencrypt/live/$DOMAIN_NAME/fullchain.pem
     LE_KEY=/etc/letsencrypt/live/$DOMAIN_NAME/privkey.pem
 
-    sed -i.bak -E "s|ssl_certificate\ .*|ssl_certificate $LE_CERT;|" "$NGINX_CONF"
-    sed -i.bak -E "s|ssl_certificate_key\ .*|ssl_certificate_key $LE_KEY;|" "$NGINX_CONF"
+    sed -i.bak -E "s|ssl_certificate\ .*|ssl_certificate $LE_CERT;|" "$NGINX_CONF_HTTPS"
+    sed -i.bak -E "s|ssl_certificate_key\ .*|ssl_certificate_key $LE_KEY;|" "$NGINX_CONF_HTTPS"
 
     service nginx restart
 fi
@@ -105,10 +117,6 @@ service postfix restart
 # ========= Log Folder =====
 mkdir -p /opt/logs
 chmod 777 /opt/logs
-
-# ======== Password for wp-admin ======
-# TODO
-# comment auth part in vim /etc/nginx/conf.d/wordpress_https.conf
 
 popd
 
