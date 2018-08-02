@@ -24,12 +24,13 @@ pushd $DIRNAME
 function setup_cron () {
     SCRIPT_NAME=$1
     CRON_REPEAT=$2
-    chmod +x ./${SCRIPT_NAME}.sh
+    SCRIPT_PATH=$(dirname $(pwd))
+    chmod +x $SCRIPT_PATH/${SCRIPT_NAME}.sh
     if [[ -f /etc/cron.d/$SCRIPT_NAME ]]; then
         echo "INFO: cron.d $SCRIPT_NAME script already configured."
     else
-        echo "$CRON_REPEAT root $(pwd)/${SCRIPT_NAME}.sh" > /etc/cron.d/$SCRIPT_NAME
-        echo "INFO: cron.d script to run $CRON_REPEAT $(pwd)/${SCRIPT_NAME}.sh"
+        echo "$CRON_REPEAT root $SCRIPT_PATH/${SCRIPT_NAME}.sh" > /etc/cron.d/$SCRIPT_NAME
+        echo "INFO: cron.d script to run $CRON_REPEAT $SCRIPT_PATH/${SCRIPT_NAME}.sh"
     fi
 }
 
