@@ -15,15 +15,24 @@ else
     EMAIL=$2
 fi
 
-WEB_SERVER_CONFIG="/opt/bitnami/apps/wordpress/htdocs/wp-config.php"
+WEB_SERVER_CONFIG="/opt/bitnami/apache2/conf/bitnami/bitnami.conf"
 WEB_SITE_ROOT="/opt/bitnami/apps/wordpress/htdocs"
 
 pushd ~ &> /dev/null
+
 if [[ -f certbot-auto ]]; then
-    echo "INFO: certbot-auto aready installed"
+    echo "INFO: Found ./certbot-auto, skipping install"
 else
     wget https://dl.eff.org/certbot-auto
     chmod a+x certbot-auto
+fi
+
+LE_CERT=/etc/letsencrypt/live/$DOMAIN_NAME/fullchain.pem
+LE_KEY=/etc/letsencrypt/live/$DOMAIN_NAME/privkey.pem
+
+if [[ -f $LE_CERT ]]; then
+    echo "INFO: Found $LE_CERT, skipping new cert request"
+else
     ./certbot-auto certonly \
         --email $EMAIL \
         --webroot \
@@ -31,14 +40,16 @@ else
         -d $DOMAIN_NAME \
         --agree-tos \
         -n
+fi
 
-    LE_CERT=/etc/letsencrypt/live/$DOMAIN_NAME/fullchain.pem
-    LE_KEY=/etc/letsencrypt/live/$DOMAIN_NAME/privkey.pem
+if grep --quiet $DOMAIN_NAME $WEB_SERVER_CONFIG ; then
+    echo "INFO: Found $DOMAIN_NAM in $WEB_SERVER_CONFIG, skipping Apache configure"
+else
+    echo "INFO: Updating $WEB_SERVER_CONFIG ..."
+    sed -i.bak -E "s|SSLCertificateFile\ .*|SSLCertificateFile \"$LE_CERT\"|" "$WEB_SERVER_CONFIG"
+    sed -i.bak -E "s|SSLCertificateKeyFile\ .*|SSLCertificateKeyFile \"$LE_KEY\"|" "$WEB_SERVER_CONFIG"
 
-   # sed -i.bak -E "s|ssl_certificate\ .*|ssl_certificate $LE_CERT;|" "$NGINX_CONF_HTTPS"
-   # sed -i.bak -E "s|ssl_certificate_key\ .*|ssl_certificate_key $LE_KEY;|" "$NGINX_CONF_HTTPS"
-
-   # service nginx restart
+    /opt/bitnami/ctlscript.sh restart apache
 fi
 
 popd &> /dev/null
