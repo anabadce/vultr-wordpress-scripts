@@ -9,6 +9,15 @@ fi
 
 echo $(date) > $LOG_FILE
 
-yum update -y &>> $LOG_FILE
+if grep --quiet Ubuntu /etc/issue; then
+
+    apt-get update &>> $LOG_FILE
+    apt-get upgrade -y &>> $LOG_FILE
+
+else
+
+    yum update -y &>> $LOG_FILE
+
+fi
 
 echo "INFO: Done, see logs in $LOG_FILE"

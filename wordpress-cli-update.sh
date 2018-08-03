@@ -1,26 +1,33 @@
 #!/bin/bash -e
 
-WEB_USER=nginx
-WP_CLI_URL=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 LOG_FILE=/opt/logs/wordpress-cli-update.sh.txt
+WP_CLI_URL=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 
 if [[ $EUID -ne 0 ]]; then
-    echo "ERROR: This script must be run as root" 
+    echo "ERROR: This script must be run as root"
     exit 1
+fi
+
+if [[ -d /opt/bitnami/apps/wordpress/htdocs/wp-content/upgrade ]]; then
+    WEB_USER=bitnami
+    SITE_PATH=/opt/bitnami/apps/wordpress/htdocs
+    chown bitnami:daemon /opt/bitnami/apps/wordpress/htdocs/wp-content/upgrade
+else
+    WEB_USER=nginx
+    SITE_PATH=/var/www/html
 fi
 
 if [[ -z $1 ]]; then
     echo "Usage: $(basename "$0") SITE_PATH"
     echo "Example: $(basename "$0") /var/www/html"
     echo
-    echo "Running using default Wordpress location in /var/www/html..."
-    SITE_PATH=/var/www/html
+    echo "Running using default Wordpress location in $SITE_PATH"
 else
     SITE_PATH=$1
 fi
 
 DIRNAME=$(dirname "$0")
-pushd $DIRNAME
+pushd $DIRNAME &> /dev/null
 
 # Wordpress CLI check
 WP_PATH=$(which wp)
@@ -39,12 +46,19 @@ fi
 
 echo "$(date) : Updating wordpress" > $LOG_FILE
 
-pushd $SITE_PATH
+pushd $SITE_PATH > $LOG_FILE
+
 sudo -H -u $WEB_USER bash -c "$WP_PATH core update" &>> $LOG_FILE
 sudo -H -u $WEB_USER bash -c "$WP_PATH plugin update --all" &>> $LOG_FILE
 sudo -H -u $WEB_USER bash -c "$WP_PATH theme update --all" &>> $LOG_FILE
-popd
+popd &> /dev/null
+
+if [[ -d /opt/bitnami/apps/wordpress/htdocs/wp-content/upgrade ]]; then
+    chown daemon:daemon /opt/bitnami/apps/wordpress/htdocs/wp-content/upgrade
+fi
 
 echo "INFO: Done, check logs in $LOG_FILE"
-popd
+
+popd &> /dev/null
+
 
