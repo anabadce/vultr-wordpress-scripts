@@ -61,7 +61,7 @@ SCRIPT_NAME="wordpress-cli-update"
 CRON_REPEAT="@weekly"
 setup_cron $SCRIPT_NAME $CRON_REPEAT
 
-# ======== wordpress update ========
+# ======== server update ========
 
 SCRIPT_NAME="server-update"
 CRON_REPEAT="@weekly"

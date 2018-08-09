@@ -17,7 +17,7 @@ echo $(date) > $LOG_FILE
 
 if [[ -d /opt/bitnami/apache2 ]]; then
     echo "INFO: reloading bitnami Apache2" 
-    apachectl -k graceful $>> $LOG_FILE
+    apachectl -k graceful &>> $LOG_FILE
 else
     echo "INFO: reloading Nginx"
     /sbin/service nginx reload &>> $LOG_FILE
