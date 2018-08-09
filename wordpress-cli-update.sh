@@ -8,6 +8,8 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+mkdir -p /opt/logs
+
 if [[ -d /opt/bitnami/apps/wordpress/htdocs/wp-content/upgrade ]]; then
     WEB_USER=bitnami
     SITE_PATH=/opt/bitnami/apps/wordpress/htdocs

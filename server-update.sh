@@ -7,6 +7,8 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+mkdir -p /opt/logs
+
 echo $(date) > $LOG_FILE
 
 if grep --quiet Ubuntu /etc/issue; then

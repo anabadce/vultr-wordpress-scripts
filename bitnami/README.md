@@ -9,8 +9,7 @@
 6. Ensure http redirects to https  *(script 3)*
 7. Disable welcome banner from Bitnami in the Wordpress home page  *(script 4)*
 8. Tune file permissions to make site safer *(script 5)*
-9. Tune PHP and Webserver *(script 6)*
-10. Add scheduled tasks to: *(script 7)*
+9. Add scheduled tasks to: *(script 6)*
 
 - Server keeps itself updated, code + themes + plugins. (weekly)
 - Renew SSL cert automatically (weekly)
@@ -25,4 +24,5 @@
 
 # Task list third party
 
-1. Register Google account for Google Analytics and Webmaster Tools
+1. Register Google account for Google Analytics and Webmaster Tools (free)
+2. Register in Site24x7 for website monitor (free)
