@@ -1,6 +1,5 @@
 #!/bin/bash -e
 
-PHP_INI=/etc/php.ini
 NGINX_CONF_HTTP=/etc/nginx/conf.d/wordpress_http.conf
 NGINX_CONF_HTTPS=/etc/nginx/conf.d/wordpress_https.conf
 
@@ -73,10 +72,6 @@ setup_cron $SCRIPT_NAME $CRON_REPEAT
 SCRIPT_NAME="certbot-update"
 CRON_REPEAT="@weekly"
 setup_cron $SCRIPT_NAME $CRON_REPEAT
-
-# ========= PHP =============
-sed -i.bak "s/expose_php = On/expose_php = Off/" $PHP_INI
-service php-fpm restart
 
 # ========= Nginx ===========
 
