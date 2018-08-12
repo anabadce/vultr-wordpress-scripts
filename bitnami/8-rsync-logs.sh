@@ -13,7 +13,10 @@ CRON_FILE=/etc/cron.d/8-rsync-logs
 APACHE_CONFIG=/opt/bitnami/apache2/conf/httpd.conf
 APACHE_LOGS=/opt/bitnami/apache2/logs/
 
-# TODO: Make Apache2 logs more verbose
+# Make Apache2 logs more verbose
+
+sed -i.bak -E "s|\ +CustomLog \"logs/access_log\".*|  CustomLog \"logs/access_log\" combined|" "$APACHE_CONFIG"
+/opt/bitnami/ctlscript.sh restart apache
 
 # Generate SSH key pair
 if [[ -f /root/.ssh/id_rsa.pub ]]; then
