@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-# Installing APCu and tuning config
+# Setting up cron jobs for updates and so on...
 
 if [[ $EUID -ne 0 ]]; then
     echo "ERROR: This script must be run as root"
