@@ -19,7 +19,7 @@ START_LINE="<VirtualHost _default_:80>"
 
 LINE1="RewriteEngine On"
 LINE2="RewriteCond %{HTTPS} !=on"
-LINE3="RewriteRule ^/(.*) https://$DOMAIN_NAME/$1 [R,L]"
+LINE3="RewriteRule ^/(.*) https://$DOMAIN_NAME/\$1 [R,L]"
 
 if grep --quiet "$START_LINE" "$APACHE_CONF"; then
 
