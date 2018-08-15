@@ -53,8 +53,8 @@ else
     fi
 fi
 
-if grep --quiet $DOMAIN_NAME $WEB_SERVER_CONFIG ; then
-    echo "INFO: Found $DOMAIN_NAM in $WEB_SERVER_CONFIG, skipping Apache configure"
+if grep --quiet letsencrypt $WEB_SERVER_CONFIG ; then
+    echo "INFO: Found letsencrypt paths in $WEB_SERVER_CONFIG, skipping Apache configure"
 else
     echo "INFO: Updating $WEB_SERVER_CONFIG ..."
     sed -i.bak -E "s|SSLCertificateFile\ .*|SSLCertificateFile \"$LE_CERT\"|" "$WEB_SERVER_CONFIG"
