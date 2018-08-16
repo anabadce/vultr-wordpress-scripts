@@ -9,9 +9,11 @@ fi
 
 LOGSERVER=ks4.abadcer.com
 LOGSERVER_USER=logsync
-CRON_FILE=/etc/cron.d/8-rsync-logs
+CRON_LOGS=/etc/cron.d/8-rsync-logs
+CRON_BACKUPS=/etc/cron.d/8-rsync-backups
 APACHE_CONFIG=/opt/bitnami/apache2/conf/httpd.conf
 APACHE_LOGS=/opt/bitnami/apache2/logs/
+BACKUPS_PATH=/root/backups
 
 # Make Apache2 logs more verbose
 
@@ -29,13 +31,16 @@ fi
 ssh-keyscan $LOGSERVER >> /root/.ssh/known_hosts
 sort -u ~/.ssh/known_hosts -o ~/.ssh/known_hosts
 
-# Add cron
-echo "*/5 * * * * root /usr/bin/rsync $APACHE_LOGS $LOGSERVER_USER@$LOGSERVER:/\$(hostname) -vr" > $CRON_FILE
+# Add cron for logs
+echo "*/5 * * * * root /usr/bin/rsync $APACHE_LOGS $LOGSERVER_USER@$LOGSERVER:/\$(hostname) -vr > /dev/null" > $CRON_LOGS
+
+# Add cron for backups
+echo "@daily * * * * root /usr/bin/rsync $BACKUPS_PATH $LOGSERVER_USER@$LOGSERVER:/\$(hostname)/backups -vr > /dev/null" > $CRON_BACKUPS
 
 # Report done
 echo "INFO: Key to allow in log server $LOGSERVER user $LOGSERVER_USER:"
 cat "/root/.ssh/id_rsa.pub"
 echo "INFO: Cron job:"
-cat $CRON_FILE
+cat $CRON_LOGS $CRON_BACKUPS
 echo "INFO: Done"
 

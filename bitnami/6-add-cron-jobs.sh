@@ -16,10 +16,10 @@ function setup_cron () {
     CRON_REPEAT=$2
     SCRIPT_PATH=$(dirname $(pwd))
     chmod +x $SCRIPT_PATH/${SCRIPT_NAME}.sh
-    if [[ -f /etc/cron.d/$SCRIPT_NAME ]]; then
+    if [[ -f /etc/cron.d/6-$SCRIPT_NAME ]]; then
         echo "INFO: cron.d $SCRIPT_NAME script already configured."
     else
-        echo "$CRON_REPEAT root $SCRIPT_PATH/${SCRIPT_NAME}.sh" > /etc/cron.d/$SCRIPT_NAME
+        echo "$CRON_REPEAT root $SCRIPT_PATH/${SCRIPT_NAME}.sh > /dev/null" > "/etc/cron.d/6-$SCRIPT_NAME"
         echo "INFO: cron.d script to run $CRON_REPEAT $SCRIPT_PATH/${SCRIPT_NAME}.sh"
     fi
 }
