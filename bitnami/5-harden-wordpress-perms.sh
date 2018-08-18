@@ -24,17 +24,18 @@ popd &> /dev/null
 # https://docs.bitnami.com/general/apps/wordpress/#how-to-disable-the-wordpress-cron-script
 WP_CONFIG=/opt/bitnami/apps/wordpress/htdocs/wp-config.php
 CRON_DISABLE="define('DISABLE_WP_CRON', true);"
+AFTER_LINE="DB_COLLATE"
 
 if grep --quiet "$CRON_DISABLE" "$WP_CONFIG"; then
     echo "INFO: Already found DISABLE_WP_CRON in WP_CONFIG, skipping..."
 else
     echo "INFO: Adding DISABLE_WP_CRON to WP_CONFIG..."
-    sed -i "/MySQL settings/i $CRON_DISABLE" $WP_CONFIG
+    sed -i "/$AFTER_LINE/a $CRON_DISABLE" $WP_CONFIG
 fi
 
 echo "INFO: Adding cron job for wp-cron.php..."
 
-echo '0 * * * * su daemon -s /bin/sh -c "cd /opt/bitnami/apps/wordpress/htdocs/; /opt/bitnami/php/bin/php -q wp-cron.php" &>/dev/null ' > /etc/cron.d/5-wp-cron 
+echo '0 * * * * daemon /bin/sh -c "cd /opt/bitnami/apps/wordpress/htdocs/; /opt/bitnami/php/bin/php -q wp-cron.php" &>/dev/null ' > /etc/cron.d/5-wp-cron 
 
 # Blocking /wp-cron.php and /xmlrpc.php in Apache
 
