@@ -35,7 +35,7 @@ sort -u ~/.ssh/known_hosts -o ~/.ssh/known_hosts
 echo "*/5 * * * * root /usr/bin/rsync $APACHE_LOGS $LOGSERVER_USER@$LOGSERVER:/\$(hostname) -vr > /dev/null" > $CRON_LOGS
 
 # Add cron for backups
-echo "@daily * * * * root /usr/bin/rsync $BACKUPS_PATH $LOGSERVER_USER@$LOGSERVER:/\$(hostname)/backups -vr > /dev/null" > $CRON_BACKUPS
+echo "@daily root /usr/bin/rsync /root/backups/ logsync@ks4.abadcer.com:/$(hostname)/backups -vr --delete > /dev/null" > $CRON_BACKUPS
 
 # Report done
 echo "INFO: Key to allow in log server $LOGSERVER user $LOGSERVER_USER:"

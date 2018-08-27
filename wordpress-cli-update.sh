@@ -9,6 +9,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 mkdir -p /opt/logs
+echo $(date) > $LOG_FILE
 
 if [[ -d /opt/bitnami/apps/wordpress/htdocs/wp-content/upgrade ]]; then
     WEB_USER=bitnami
