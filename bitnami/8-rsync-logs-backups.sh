@@ -11,14 +11,16 @@ LOGSERVER=ks4.abadcer.com
 LOGSERVER_USER=logsync
 CRON_LOGS=/etc/cron.d/8-rsync-logs
 CRON_BACKUPS=/etc/cron.d/8-rsync-backups
-APACHE_CONFIG=/opt/bitnami/apache2/conf/httpd.conf
-APACHE_LOGS=/opt/bitnami/apache2/logs/
+LOGS_PATH=/opt/bitnami/apache2/logs/
 BACKUPS_PATH=/root/backups
+APACHE_CONFIG=/opt/bitnami/apache2/conf/httpd.conf
 
 # Make Apache2 logs more verbose
 
-sed -i.bak -E "s|\ +CustomLog \"logs/access_log\".*|  CustomLog \"logs/access_log\" combined|" "$APACHE_CONFIG"
-/opt/bitnami/ctlscript.sh restart apache
+if [[ -f $APACHE_CONFIG ]]; then
+    sed -i.bak -E "s|\ +CustomLog \"logs/access_log\".*|  CustomLog \"logs/access_log\" combined|" "$APACHE_CONFIG"
+    /opt/bitnami/ctlscript.sh restart apache
+fi
 
 # Generate SSH key pair
 if [[ -f /root/.ssh/id_rsa.pub ]]; then
@@ -32,10 +34,10 @@ ssh-keyscan $LOGSERVER >> /root/.ssh/known_hosts
 sort -u ~/.ssh/known_hosts -o ~/.ssh/known_hosts
 
 # Add cron for logs
-echo "*/5 * * * * root /usr/bin/rsync $APACHE_LOGS $LOGSERVER_USER@$LOGSERVER:/\$(hostname) -vr > /dev/null" > $CRON_LOGS
+echo "*/5 * * * * root /usr/bin/rsync $LOGS_PATH --include '*log' --exclude '*' $LOGSERVER_USER@$LOGSERVER:/\$(hostname) -vr > /dev/null" > $CRON_LOGS
 
 # Add cron for backups
-echo "@daily root /usr/bin/rsync /root/backups/ logsync@ks4.abadcer.com:/$(hostname)/backups -vr --delete > /dev/null" > $CRON_BACKUPS
+echo "@daily root /usr/bin/rsync $BACKUPS_PATH $LOGSERVER_USER@$LOGSERVER:/\$(hostname)/backups -vr --delete > /dev/null" > $CRON_BACKUPS
 
 # Report done
 echo "INFO: Key to allow in log server $LOGSERVER user $LOGSERVER_USER:"

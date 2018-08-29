@@ -26,7 +26,7 @@ ssh-keyscan $LOGSERVER >> /root/.ssh/known_hosts
 sort -u ~/.ssh/known_hosts -o ~/.ssh/known_hosts
 
 # Add cron for logs
-echo "*/5 * * * * root /usr/bin/rsync $LOGS_PATH --include '*.log' --exclude '*' $LOGSERVER_USER@$LOGSERVER:/\$(hostname) -vr > /dev/null" > $CRON_LOGS
+echo "*/5 * * * * root /usr/bin/rsync $LOGS_PATH --include '*log' --exclude '*' $LOGSERVER_USER@$LOGSERVER:/\$(hostname) -vr > /dev/null" > $CRON_LOGS
 
 # Add cron for backups
 echo "@daily root /usr/bin/rsync $BACKUPS_PATH $LOGSERVER_USER@$LOGSERVER:/\$(hostname)/backups -vr --delete > /dev/null" > $CRON_BACKUPS
