@@ -12,7 +12,7 @@ LOGSERVER_USER=logsync
 CRON_LOGS=/etc/cron.d/8-rsync-logs
 CRON_BACKUPS=/etc/cron.d/8-rsync-backups
 LOGS_PATH=/var/log/nginx/
-BACKUPS_PATH=/root/backups
+BACKUPS_PATH=/root/backups/
 
 # Generate SSH key pair
 if [[ -f /root/.ssh/id_rsa.pub ]]; then

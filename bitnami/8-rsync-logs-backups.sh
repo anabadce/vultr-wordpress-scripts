@@ -12,7 +12,7 @@ LOGSERVER_USER=logsync
 CRON_LOGS=/etc/cron.d/8-rsync-logs
 CRON_BACKUPS=/etc/cron.d/8-rsync-backups
 LOGS_PATH=/opt/bitnami/apache2/logs/
-BACKUPS_PATH=/root/backups
+BACKUPS_PATH=/root/backups/
 APACHE_CONFIG=/opt/bitnami/apache2/conf/httpd.conf
 
 # Make Apache2 logs more verbose
