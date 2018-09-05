@@ -11,12 +11,14 @@ fi
 mkdir -p /opt/logs
 echo $(date) > $LOG_FILE
 
+# Defining known defaults
 if [[ -d /opt/bitnami/apps/wordpress/htdocs/wp-content/upgrade ]]; then
-    WEB_USER=bitnami
+    WEB_USER=daemon
+    LOCAL_USER=bitnami
     SITE_PATH=/opt/bitnami/apps/wordpress/htdocs
-    chown bitnami:daemon /opt/bitnami/apps/wordpress/htdocs/wp-content/upgrade
 else
     WEB_USER=nginx
+    LOCAL_USER=root
     SITE_PATH=/var/www/html
 fi
 
@@ -31,6 +33,10 @@ fi
 
 DIRNAME=$(dirname "$0")
 pushd $DIRNAME &> /dev/null
+
+# Relaxing permissions
+echo "INFO: Changing file ownership to $WEB_USER"
+chown -R $WEB_USER:$WEB_USER $SITE_PATH
 
 # Wordpress CLI check
 WP_PATH=$(which wp)
@@ -51,15 +57,27 @@ echo "$(date) : Updating wordpress" > $LOG_FILE
 
 pushd $SITE_PATH > $LOG_FILE
 
+# Upgrade using WP_CLI
 sudo -H -u $WEB_USER bash -c "$WP_PATH core update" &>> $LOG_FILE
 sudo -H -u $WEB_USER bash -c "$WP_PATH plugin update --all" &>> $LOG_FILE
 sudo -H -u $WEB_USER bash -c "$WP_PATH theme update --all" &>> $LOG_FILE
+
+# Hardening permissions
+echo "INFO: Hardening permissions using ownership $LOCAL_USER and $WEB_USER"
+chown -R $LOCAL_USER:$LOCAL_USER .
+find . -type d -exec chmod 775 {} \;
+find . -type f -exec chmod 664 {} \;
+
+chown -R $LOCAL_USER:$WEB_USER wp-content/uploads
+find wp-content/uploads -type d -exec chmod 775 {} \;
+find wp-content/uploads -type f -exec chmod 664 {} \;
+
+chown -R $LOCAL_USER:$WEB_USER wp-config.php
+chmod 640 wp-config.php
+
 popd &> /dev/null
 
-if [[ -d /opt/bitnami/apps/wordpress/htdocs/wp-content/upgrade ]]; then
-    chown daemon:daemon /opt/bitnami/apps/wordpress/htdocs/wp-content/upgrade
-fi
-
+# Done
 echo "INFO: Done, check logs in $LOG_FILE"
 
 popd &> /dev/null

@@ -6,18 +6,25 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 WEB_SITE_ROOT="/opt/bitnami/apps/wordpress/htdocs"
+LOCAL_USER=bitnami
+WEB_USER=daemon
 
 echo "INFO: Setting up Wordpress file permissions..."
 
 pushd $WEB_SITE_ROOT &> /dev/null
 
-chown -R bitnami:bitnami .
-chown bitnami:daemon wp-config.php
+# Hardening permissions
+echo "INFO: Hardening permissions using ownership $LOCAL_USER and $WEB_USER"
+chown -R $LOCAL_USER:$LOCAL_USER .
+find . -type d -exec chmod 775 {} \;
+find . -type f -exec chmod 664 {} \;
+
+chown -R $LOCAL_USER:$WEB_USER wp-content/uploads
+find wp-content/uploads -type d -exec chmod 775 {} \;
+find wp-content/uploads -type f -exec chmod 664 {} \;
+
+chown -R $LOCAL_USER:$WEB_USER wp-config.php
 chmod 640 wp-config.php
-chown -R bitnami:daemon wp-content/uploads
-chown -R bitnami:daemon wp-content/themes
-chown -R bitnami:daemon wp-content/plugins
-chown -R bitnami:daemon wp-content/upgrade
 
 popd &> /dev/null
 
