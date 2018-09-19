@@ -16,10 +16,12 @@ if [[ -d /opt/bitnami/apps/wordpress/htdocs/wp-content/upgrade ]]; then
     WEB_USER=daemon
     LOCAL_USER=bitnami
     SITE_PATH=/opt/bitnami/apps/wordpress/htdocs
+    PATH="/home/bitnami/bin:/home/bitnami/.local/bin:/opt/bitnami/apps/wordpress/bin:/opt/bitnami/varnish/bin:/opt/bitnami/sqlite/bin:/opt/bitnami/php/bin:/opt/bitnami/mysql/bin:/opt/bitnami/apache2/bin:/opt/bitnami/common/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
 else
     WEB_USER=nginx
     LOCAL_USER=root
     SITE_PATH=/var/www/html
+    PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin"
 fi
 
 if [[ -z $1 ]]; then
