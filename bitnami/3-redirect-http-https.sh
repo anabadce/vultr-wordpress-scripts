@@ -23,7 +23,7 @@ LINE3="RewriteRule ^/(.*) https://$DOMAIN_NAME/\$1 [R,L]"
 
 if grep --quiet "$START_LINE" "$APACHE_CONF"; then
 
-    if grep --quiet "$LINE1" "$APACHE_CONF"; then
+    if grep --quiet "$LINE3" "$APACHE_CONF"; then
         echo "INFO: HTTPS redirect config already added"
     else
         echo "INFO: Adding HTTPS redirect"

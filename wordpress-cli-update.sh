@@ -12,7 +12,7 @@ mkdir -p /opt/logs
 echo $(date) > $LOG_FILE
 
 # Defining known defaults
-if [[ -d /opt/bitnami/apps/wordpress/htdocs/wp-content/upgrade ]]; then
+if [[ -d /opt/bitnami/apps/wordpress/htdocs ]]; then
     WEB_USER=daemon
     LOCAL_USER=bitnami
     SITE_PATH=/opt/bitnami/apps/wordpress/htdocs
