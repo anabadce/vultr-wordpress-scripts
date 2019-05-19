@@ -34,7 +34,7 @@ fi
 
 # Backing up DB
 
-DATABASES=$($MYSQL -u$USER $MYSQL_PASS --execute="show databases;" | grep -E "wp|bitnami")
+DATABASES=$($MYSQL -u$USER $MYSQL_PASS --execute="show databases;" | grep -Ev "Database|information_schema|mysql|performance_schema|sys")
 
 for DB in $DATABASES;
 do
