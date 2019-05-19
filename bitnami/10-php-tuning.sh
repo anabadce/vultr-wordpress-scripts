@@ -14,7 +14,9 @@ PHP_PATH=/opt/bitnami/php/etc/php.ini
 if [[ -f "$PHP_PATH" ]] ; then
     echo "INFO: Found php.ini, changing..."
 
+    sed -i.bak "s/;extension=apcu.so/extension=apcu.so/" "$PHP_PATH"
     sed -i.bak -E "s/.*max_input_vars\ =\ .*/max_input_vars = 3000/" "$PHP_PATH"
+    sed -i.bak -E "s/expose_php.*/expose_php = Off/" "$PHP_PATH"
 
     /opt/bitnami/ctlscript.sh restart php-fpm
 else

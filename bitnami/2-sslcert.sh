@@ -33,7 +33,7 @@ LE_KEY=/etc/letsencrypt/live/$DOMAIN_NAME/privkey.pem
 if [[ -f $LE_CERT ]]; then
     echo "INFO: Found $LE_CERT, skipping new cert request"
 else
-    if [[ $DOMAIN_NAME == "www.*" ]]; then
+    if [[ $DOMAIN_NAME = www.* ]]; then
         DOMAIN_NAME_NO_WWW=$(echo $DOMAIN_NAME | cut -d '.' -f 2-)
         ./certbot-auto certonly \
         --email $EMAIL \
