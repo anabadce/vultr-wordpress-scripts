@@ -27,7 +27,10 @@ fi
 
 # Relaxing permissions
 echo "INFO: Changing file ownership to $WEB_USER"
-chown -R $WEB_USER:$WEB_USER $SITE_PATH
+
+chown -R $LOCAL_USER:$WEB_USER $SITE_PATH
+find $SITE_PATH -type d -exec chmod 775 {} \;
+find $SITE_PATH -type f -exec chmod 664 {} \;
+chmod 640 $SITE_PATH/wp-config.php
 
 echo "INFO: Done"
-

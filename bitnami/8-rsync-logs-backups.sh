@@ -31,7 +31,7 @@ fi
 
 # Trust signatures
 ssh-keyscan $LOGSERVER >> /root/.ssh/known_hosts
-sort -u ~/.ssh/known_hosts -o ~/.ssh/known_hosts
+sort -u /root/.ssh/known_hosts -o /root/.ssh/known_hosts
 
 # Add cron for logs
 echo "*/5 * * * * root /usr/bin/rsync $LOGS_PATH --include '*log' --exclude '*' $LOGSERVER_USER@$LOGSERVER:/\$(hostname) -vr > /dev/null" > $CRON_LOGS
@@ -42,7 +42,7 @@ echo "@daily root /usr/bin/rsync $BACKUPS_PATH $LOGSERVER_USER@$LOGSERVER:/\$(ho
 # Report done
 echo "INFO: Key to allow in log server $LOGSERVER user $LOGSERVER_USER:"
 cat "/root/.ssh/id_rsa.pub"
+echo "INFO: Also create folder $(hostname) in $LOGSERVER"
 echo "INFO: Cron job:"
 cat $CRON_LOGS $CRON_BACKUPS
 echo "INFO: Done"
-
