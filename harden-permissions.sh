@@ -26,7 +26,7 @@ else
 fi
 
 # Hardening permissions
-pushd $SITE_PATH $> /dev/null
+pushd $SITE_PATH &> /dev/null
 
 echo "INFO: Hardening permissions using ownership $LOCAL_USER and $WEB_USER"
 chown -R $LOCAL_USER:$LOCAL_USER .

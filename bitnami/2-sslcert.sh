@@ -20,11 +20,14 @@ WEB_SITE_ROOT="/opt/bitnami/apps/wordpress/htdocs"
 
 pushd ~ &> /dev/null
 
-if [[ -f certbot-auto ]]; then
-    echo "INFO: Found ./certbot-auto, skipping install"
+if [[ -f /usr/bin/certbot ]]; then
+    echo "INFO: Found certbot, skipping install"
 else
-    wget https://dl.eff.org/certbot-auto
-    chmod a+x certbot-auto
+    apt update
+    apt install snapd -y
+    snap install core; snap refresh core
+    snap install --classic certbot
+    ln -s /snap/bin/certbot /usr/bin/certbot
 fi
 
 LE_CERT=/etc/letsencrypt/live/$DOMAIN_NAME/fullchain.pem
@@ -35,7 +38,7 @@ if [[ -f $LE_CERT ]]; then
 else
     if [[ $DOMAIN_NAME = www.* ]]; then
         DOMAIN_NAME_NO_WWW=$(echo $DOMAIN_NAME | cut -d '.' -f 2-)
-        ./certbot-auto certonly \
+        certbot certonly \
         --email $EMAIL \
         --webroot \
         -w $WEB_SITE_ROOT \
@@ -43,7 +46,7 @@ else
         --agree-tos \
         -n
     else
-        ./certbot-auto certonly \
+        certbot certonly \
         --email $EMAIL \
         --webroot \
         -w $WEB_SITE_ROOT \
@@ -68,4 +71,3 @@ popd &> /dev/null
 cat $WEB_SERVER_CONFIG | grep $DOMAIN_NAME
 
 echo "INFO: Done"
-
