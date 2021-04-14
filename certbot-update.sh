@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 LOG_FILE=/opt/logs/certbot-update.txt
-CERTBOT_BITNAMI=/home/bitnami/certbot-auto
+CERTBOT_BITNAMI=certbot
 CERTBOT_VULT=/root/certbot-auto
 APACHE_BIN=/opt/bitnami/apache2/bin
 
