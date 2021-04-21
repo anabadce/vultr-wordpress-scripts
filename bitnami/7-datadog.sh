@@ -12,7 +12,7 @@ else
     DATADOG_KEY=$1
 fi
 
-DD_API_KEY=$DATADOG_KEY bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent/master/cmd/agent/install_script.sh)"
+DD_AGENT_MAJOR_VERSION=7 DD_API_KEY=$DATADOG_KEY DD_SITE="datadoghq.com" bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
 
 echo "INFO: Done"
 echo "INFO: Run \"sudo datadog-agent status\" to check"
